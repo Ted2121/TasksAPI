@@ -106,7 +106,7 @@ public class PinnedTaskRepository : BaseDataAccess, IPinnedTaskRepository
     {
         try
         {
-            string commandText = "UPDATE PinnedTask " +
+            string commandText = "UPDATE PinnedTask SET " +
                 "Text = @Text, " +
                 "LabelName = @LabelName, " +
                 "UserId = @UserId " +
