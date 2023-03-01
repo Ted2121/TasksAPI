@@ -11,7 +11,7 @@ public static class SqlRepositoryFactory
             case "ISuggestedTaskRepository":
                 return new SuggestedTaskRepository(connectionstring) as T;
             case "ISuggestedLabelRepository":
-                return new ISuggestedLabelRepository(connectionstring) as T;
+                return new SuggestedLabelRepository(connectionstring) as T;
 
         }
         throw new ArgumentException($"Unknown type {typeof(T).FullName}");
