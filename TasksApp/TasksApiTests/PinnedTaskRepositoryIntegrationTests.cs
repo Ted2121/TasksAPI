@@ -18,7 +18,6 @@ public class PinnedTaskRepositoryIntegrationTests
         _configuration = builder.Build();
     }
 
-
     [SetUp]
     public void SetUp()
     {
@@ -32,7 +31,8 @@ public class PinnedTaskRepositoryIntegrationTests
         _pinnedTaskRepository = new PinnedTaskRepository(_configuration["Tasks: LocalConnectionString"]);
     }
 
-    // Teardown not possible because of identity generated id
+    [TearDown]
+    public async Task TearDown() => await _pinnedTaskRepository.DeletePinnedTaskAsync(_pinnedTask.Id);
 
     [Test]
     public async Task TestingInsertionExpectingPositiveResultAsync()
@@ -43,32 +43,17 @@ public class PinnedTaskRepositoryIntegrationTests
         _pinnedTask.Id = await _pinnedTaskRepository.InsertPinnedTaskAsync(_pinnedTask);
 
         // Assert
-        try
-        {
-            Assert.That(_pinnedTask.Id, Is.GreaterThan(0));
-        }
-        finally
-        {
-            await _pinnedTaskRepository.DeletePinnedTaskAsync(_pinnedTask.Id);
-        }
+        Assert.That(_pinnedTask.Id, Is.GreaterThan(0));
     }
 
     [Test]
-    public async Task TestingInsertionThrowsExceptionOnNullUserIdAsync()
+    public void TestingInsertionThrowsExceptionOnNullUserIdAsync()
     {
         // Arrange 
         _pinnedTask.UserId = null;
 
         // Act & Assert
-        try
-        {
-            Assert.That(async () => await _pinnedTaskRepository.InsertPinnedTaskAsync(_pinnedTask), Throws.Exception);
-        }
-        finally
-        {
-            await _pinnedTaskRepository.DeletePinnedTaskAsync(_pinnedTask.Id);
-        }
-
+        Assert.That(async () => await _pinnedTaskRepository.InsertPinnedTaskAsync(_pinnedTask), Throws.Exception);
     }
 
     [Test]
@@ -81,38 +66,24 @@ public class PinnedTaskRepositoryIntegrationTests
         var returnedPinnedTask = await _pinnedTaskRepository.GetPinnedTaskByIdAsync(_pinnedTask.Id);
 
         // Assert
-        try
-        {
-            Assert.That(returnedPinnedTask, Is.Not.Null);
-        }
-        finally
-        {
-            await _pinnedTaskRepository.DeletePinnedTaskAsync(_pinnedTask.Id);
-        }
+        Assert.That(returnedPinnedTask, Is.Not.Null);
     }
 
     [Test]
     public async Task TestingUpdateExpectingPropertiesChangeInDb()
     {
-        try
-        {
-            // Arrange
-            _pinnedTask.Id = await _pinnedTaskRepository.InsertPinnedTaskAsync(_pinnedTask);
-            var newLabel = "NewTestLabel";
-            _pinnedTask.LabelName = newLabel;
+        // Arrange
+        _pinnedTask.Id = await _pinnedTaskRepository.InsertPinnedTaskAsync(_pinnedTask);
+        var newLabel = "NewTestLabel";
+        _pinnedTask.LabelName = newLabel;
 
-            // Act
-            await _pinnedTaskRepository.UpdatePinnedTaskAsync(_pinnedTask);
-            var pinnedTaskInDb = await _pinnedTaskRepository.GetPinnedTaskByIdAsync(_pinnedTask.Id);
-            var labelNameFromDb = pinnedTaskInDb.LabelName;
+        // Act
+        await _pinnedTaskRepository.UpdatePinnedTaskAsync(_pinnedTask);
+        var pinnedTaskInDb = await _pinnedTaskRepository.GetPinnedTaskByIdAsync(_pinnedTask.Id);
+        var labelNameFromDb = pinnedTaskInDb.LabelName;
 
-            // Assert
-            Assert.That(labelNameFromDb, Is.EqualTo(newLabel));
-        }
-        finally
-        {
-            await _pinnedTaskRepository.DeletePinnedTaskAsync(_pinnedTask.Id);
-        }
+        // Assert
+        Assert.That(labelNameFromDb, Is.EqualTo(newLabel));
     }
 
     [Test]
@@ -131,8 +102,6 @@ public class PinnedTaskRepositoryIntegrationTests
     [Test]
     public async Task TestingGetAllPinnedTasksExpectingAnyReturned()
     {
-        try
-        {
         // Arrange
         _pinnedTask.Id = await _pinnedTaskRepository.InsertPinnedTaskAsync(_pinnedTask);
 
@@ -141,11 +110,5 @@ public class PinnedTaskRepositoryIntegrationTests
 
         // Assert
         Assert.That(returnedPinnedTasks.Any(), Is.True);
-
-        }
-        finally 
-        {
-            await _pinnedTaskRepository.DeletePinnedTaskAsync(_pinnedTask.Id);
-        }
     }
 }

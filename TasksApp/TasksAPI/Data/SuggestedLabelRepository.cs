@@ -104,8 +104,8 @@ public class SuggestedLabelRepository : BaseDataAccess, ISuggestedLabelRepositor
     {
         try
         {
-            string commandText = "UPDATE SuggestedLabel " +
-                "Name = @Name, " +
+            string commandText = "UPDATE SuggestedLabel SET " +
+                "Name = @Name " +
                 "WHERE Id = @Id";
 
             using (SqlConnection connection = CreateConnection())

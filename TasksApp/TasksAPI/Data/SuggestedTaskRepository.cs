@@ -105,9 +105,9 @@ public class SuggestedTaskRepository : BaseDataAccess, ISuggestedTaskRepository
     {
         try
         {
-            string commandText = "UPDATE SuggestedTask " +
+            string commandText = "UPDATE SuggestedTask SET " +
                 "Text = @Text, " +
-                "FKSuggestedLabelId = @FKSuggestedLabelId, " +
+                "FKSuggestedLabelId = @FKSuggestedLabelId " +
                 "WHERE Id = @Id";
 
             using (SqlConnection connection = CreateConnection())
