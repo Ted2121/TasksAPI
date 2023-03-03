@@ -6,7 +6,7 @@ using TasksAPI.DTOs;
 using TasksAPI.Models;
 
 namespace TasksAPI.Controllers;
-[Route("api/[controller]")]
+[Route("api/v1/[controller]")]
 [ApiController]
 public class PinnedTasksController : ControllerBase
 {
