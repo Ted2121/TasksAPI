@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using AutoMapper;
+using Microsoft.Extensions.Configuration;
+using TasksAPI.AutoMapperProfiles;
 using TasksAPI.Data;
 using TasksAPI.Models;
 
@@ -13,13 +15,24 @@ public class PinnedTaskRepositoryIntegrationTests
 
     public PinnedTaskRepositoryIntegrationTests()
     {
+        InitializeConfigurationBuilder();
+    }
+
+    private void InitializeConfigurationBuilder()
+    {
         var builder = new ConfigurationBuilder()
             .AddUserSecrets<PinnedTaskRepositoryIntegrationTests>();
         _configuration = builder.Build();
     }
+    
 
     [SetUp]
     public void SetUp()
+    {
+        CreatePinnedTask();
+        InitializePinnedTaskRepository();
+    }
+    private void CreatePinnedTask()
     {
         _pinnedTask = new PinnedTask()
         {
@@ -27,7 +40,9 @@ public class PinnedTaskRepositoryIntegrationTests
             LabelName = "TestLabel",
             UserId = Guid.NewGuid().ToString()
         };
-
+    }
+    private void InitializePinnedTaskRepository()
+    {
         _pinnedTaskRepository = new PinnedTaskRepository(_configuration["Tasks: LocalConnectionString"]);
     }
 

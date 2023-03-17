@@ -16,19 +16,32 @@ public class SuggestedLabelRepositoryIntegrationTests
 
     public SuggestedLabelRepositoryIntegrationTests()
     {
+        InitializeConfigurationBuilder();
+    }
+
+
+    [SetUp]
+    public void SetUp()
+    {
+        CreateSuggestedLabel();
+        InitializeSuggestedLabelRepository();
+    }
+
+    private void InitializeConfigurationBuilder()
+    {
         var builder = new ConfigurationBuilder()
             .AddUserSecrets<SuggestedLabelRepositoryIntegrationTests>();
         _configuration = builder.Build();
     }
-
-    [SetUp]
-    public void SetUp()
+    private void CreateSuggestedLabel()
     {
         _suggestedLabel = new SuggestedLabel()
         {
             Name = "test name",
         };
-
+    }
+    private void InitializeSuggestedLabelRepository()
+    {
         _suggestedLabelRepository = new SuggestedLabelRepository(_configuration["Tasks: LocalConnectionString"]);
     }
 

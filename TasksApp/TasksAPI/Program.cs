@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Configuration;
+using Serilog;
 using TasksAPI.Data;
 
 namespace TasksAPI;
@@ -25,6 +26,11 @@ public class Program
         builder.Services.AddScoped((conf) => SqlRepositoryFactory.CreateRepo<ISuggestedTaskRepository>(localConnectionString));
         #endregion
 
+        builder.Host.UseSerilog((ctx, lc) => lc
+    .ReadFrom.Configuration(ctx.Configuration));
+
+        builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -38,7 +44,7 @@ public class Program
 
         app.UseAuthorization();
 
-
+        app.UseSerilogRequestLogging();
         app.MapControllers();
 
         app.Run();

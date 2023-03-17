@@ -13,6 +13,11 @@ public class SuggestedTaskRepositoryIntegrationTests
 
     public SuggestedTaskRepositoryIntegrationTests()
     {
+        InitializeConfigurationBuilder();
+    }
+
+    private void InitializeConfigurationBuilder()
+    {
         var builder = new ConfigurationBuilder()
             .AddUserSecrets<SuggestedTaskRepositoryIntegrationTests>();
         _configuration = builder.Build();
@@ -21,26 +26,37 @@ public class SuggestedTaskRepositoryIntegrationTests
     [SetUp]
     public async Task SetUp()
     {
-        _suggestedTaskRepository = new SuggestedTaskRepository(_configuration["Tasks: LocalConnectionString"]);
-
-        _suggestedLabelRepository = new SuggestedLabelRepository(_configuration["Tasks: LocalConnectionString"]);
-
-        _suggestedLabel = new SuggestedLabel()
-        {
-            Name = "TestLabel"
-        };
+        InitializeSuggestedTaskRepository();
+        InitializeSuggestedLabelRepository();
+        CreateSuggestedLabel();
 
         _suggestedLabel.Id = await _suggestedLabelRepository.InsertSuggestedLabelAsync(_suggestedLabel);
 
+        CreateSuggestedTask();
+    }
 
-
+    private void CreateSuggestedTask()
+    {
         _suggestedTask = new SuggestedTask()
         {
             Text = "TestText",
             FKSuggestedLabelId = _suggestedLabel.Id,
         };
-
-
+    }
+    private void CreateSuggestedLabel()
+    {
+        _suggestedLabel = new SuggestedLabel()
+        {
+            Name = "TestLabel"
+        };
+    }
+    private void InitializeSuggestedLabelRepository()
+    {
+        _suggestedLabelRepository = new SuggestedLabelRepository(_configuration["Tasks: LocalConnectionString"]);
+    }
+    private void InitializeSuggestedTaskRepository()
+    {
+        _suggestedTaskRepository = new SuggestedTaskRepository(_configuration["Tasks: LocalConnectionString"]);
     }
 
     [TearDown]

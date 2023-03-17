@@ -12,12 +12,15 @@ public class PinnedTasksController : ControllerBase
 {
     private readonly IPinnedTaskRepository _pinnedTaskRepository;
     private readonly IMapper _mapper;
+    private readonly ILogger<PinnedTasksController> _logger;
 
-    public PinnedTasksController(IPinnedTaskRepository pinnedTaskRepository, IMapper mapper)
+    public PinnedTasksController(IPinnedTaskRepository pinnedTaskRepository, IMapper mapper, ILogger<PinnedTasksController> logger)
     {
         _pinnedTaskRepository = pinnedTaskRepository;
         _mapper = mapper;
+        _logger = logger;
     }
+
 
     [HttpGet]
     [Route("{id}")]
@@ -43,7 +46,9 @@ public class PinnedTasksController : ControllerBase
             return NotFound();
         }
 
-        return Ok(_mapper.Map<IEnumerable<PinnedTaskDto>>(pinnedTasks));
+        var pinnedTaskDtos = _mapper.Map<IEnumerable<PinnedTaskDto>>(pinnedTasks);
+
+        return Ok(pinnedTaskDtos);
     }
 
     [HttpPost]
@@ -94,7 +99,7 @@ public class PinnedTasksController : ControllerBase
 
         var pinnedTask = _mapper.Map<PinnedTask>(pinnedTaskDto);
 
-        if(id == pinnedTask.Id)
+        if(id != pinnedTask.Id)
         {
             return Unauthorized();
         }
