@@ -106,7 +106,7 @@ public class PinnedTasksControllerIntegrationTests
         _pinnedTaskDto.Id = returnedId;
 
         // Act
-        var deleteResponse = await _httpClient.DeleteAsync($"{_baseUrl}{_pinnedTaskDto.Id}");
+        var deleteResponse = await _httpClient.DeleteAsync($"{_baseUrl}/{_pinnedTaskDto.Id}");
         var statusCode = deleteResponse.StatusCode;
 
         // Assert

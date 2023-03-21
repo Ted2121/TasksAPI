@@ -94,7 +94,7 @@ public class SuggestedLabelsController : ControllerBase
 
         var suggestedLabel = _mapper.Map<SuggestedLabel>(suggestedLabelDto);
 
-        if (id == suggestedLabel.Id)
+        if (id != suggestedLabel.Id)
         {
             return Unauthorized();
         }

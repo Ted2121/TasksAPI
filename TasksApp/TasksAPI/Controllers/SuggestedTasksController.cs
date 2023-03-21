@@ -94,7 +94,7 @@ public class SuggestedTasksController : ControllerBase
 
         var suggestedTask = _mapper.Map<SuggestedTask>(suggestedTaskDto);
 
-        if (id == suggestedTask.Id)
+        if (id != suggestedTask.Id)
         {
             return Unauthorized();
         }
